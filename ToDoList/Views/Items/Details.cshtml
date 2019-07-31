@@ -7,13 +7,22 @@
 <h2>Item Details</h2>
 <hr />
 <h3>@Html.DisplayNameFor(model => model.Description): @Html.DisplayFor(model => model.Description)</h3>
-<h3>Categories the item belongs to:</h3>
-<ul>
-@foreach(var join in Model.Categories)
+
+@if(@Model.Categories.Count == 0)
 {
-  <li>@join.Category.Name</li>
+  <p>This item does not belong to any categories</p>
 }
-</ul>
+else
+{
+  <h4>Categories the item belongs to:</h4>
+  <ul>
+  @foreach(var join in Model.Categories)
+  {
+    <li>@join.Category.Name</li>
+  }
+  </ul>
+}
+
 <p>@Html.ActionLink("Back to list", "Index")</p>
 <p>@Html.ActionLink("Edit Item", "Edit", new { id = Model.ItemId })</p>
 <p>@Html.ActionLink("Delete Item", "Delete", new { id = Model.ItemId })</p>
