@@ -4,16 +4,13 @@
 
 @model ToDoList.Models.Item
 
-<h2>Edit</h2>
+<h2>Add a category</h2>
 
-<h4>Edit this task: @Html.DisplayFor(model => model.Description)</h4>
+<h4>Add a category to this task: @Html.DisplayFor(model => model.Description)</h4>
 
 @using (Html.BeginForm())
 {
     @Html.HiddenFor(model => model.ItemId)
-
-    @Html.LabelFor(model => model.Description)
-    @Html.EditorFor(model => model.Description)
 
     @Html.Label("Select category")
     @Html.DropDownList("CategoryId")
