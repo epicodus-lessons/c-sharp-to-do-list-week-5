@@ -2,6 +2,7 @@
   Layout = "_Layout";
 }
 
+@* @using System.Security.Claims *@
 @model ToDoList.Models.Item
 
 <h2>Item Details</h2>
@@ -29,6 +30,9 @@ else
 }
 
 <p>@Html.ActionLink("Back to list", "Index")</p>
-<p>@Html.ActionLink("Edit Item", "Edit", new { id = Model.ItemId })</p>
-<p>@Html.ActionLink("Add a Category", "AddCategory", new { id = Model.ItemId })</p>
-<p>@Html.ActionLink("Delete Item", "Delete", new { id = Model.ItemId })</p>
+@* @if (User.Identity.IsAuthenticated && ViewBag.IsCurrentUser) *@
+@* { *@
+  <p>@Html.ActionLink("Edit Item", "Edit", new { id = Model.ItemId })</p>
+  <p>@Html.ActionLink("Add a Category", "AddCategory", new { id = Model.ItemId })</p>
+  <p>@Html.ActionLink("Delete Item", "Delete", new { id = Model.ItemId })</p>
+@* } *@

@@ -13,6 +13,6 @@ namespace ToDoList.Models
         public string Description { get; set; }
         public virtual ApplicationUser User { get; set; }
 
-        public ICollection<CategoryItem> Categories { get;}
+        public virtual ICollection<CategoryItem> Categories { get;}
     }
 }
