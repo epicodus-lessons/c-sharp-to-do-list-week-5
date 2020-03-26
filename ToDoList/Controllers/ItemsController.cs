@@ -13,7 +13,7 @@ using System.Security.Claims;
 
 namespace ToDoList.Controllers
 {
-  [Authorize] //Remmove this line!
+  // [Authorize] //Remmove this line!
   public class ItemsController : Controller
   {
     private readonly ToDoListContext _db;
@@ -28,15 +28,15 @@ namespace ToDoList.Controllers
     //we do not want to find the user and their items!
     public async Task<ActionResult> Index()
     {
-      var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-      var currentUser = await _userManager.FindByIdAsync(userId);
-      var userItems = _db.Items.Where(entry => entry.User.Id == currentUser.Id);
-      // List<Item> userItems = _db.Items.ToList();
+      // var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      // var currentUser = await _userManager.FindByIdAsync(userId);
+      // var userItems = _db.Items.Where(entry => entry.User.Id == currentUser.Id);
+      List<Item> userItems = _db.Items.ToList();
       return View(userItems);
     }
 
     // Add Authorize to the Create() Route
-    // [Authorize] 
+    [Authorize] 
     public ActionResult Create()
     {
       ViewBag.CategoryId = new SelectList(_db.Categories, "CategoryId", "Name");
@@ -66,24 +66,24 @@ namespace ToDoList.Controllers
           .Include(item => item.Categories)
           .ThenInclude(join => join.Category)
           .FirstOrDefault(item => item.ItemId == id);
-      // var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-      // ViewBag.IsCurrentUser = userId == thisItem.User.Id;
+      var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      ViewBag.IsCurrentUser = userId == thisItem.User.Id;
       return View(thisItem);
     }
 
     // Here we're doing a lot: changing Edit() into an asyn action, finding the user and the item that matches that user id, then doing a safeguard check to see if it is null.
-    // [Authorize]
-    public ActionResult Edit(int id)
-    // public async Task<ActionResult> Edit(int id)
+    [Authorize]
+    // public ActionResult Edit(int id)
+    public async Task<ActionResult> Edit(int id)
     {
-      //  var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-      // var currentUser = await _userManager.FindByIdAsync(userId);
-      var thisItem = _db.Items.FirstOrDefault(items => items.ItemId == id);
-      // var thisItem = _db.Items.Where(entry => entry.User.Id == currentUser.Id).FirstOrDefault(items => items.ItemId == id);
-      // if (thisItem == null)
-      // {
-      //   return RedirectToAction("Details", new {id = id});
-      // }
+       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      var currentUser = await _userManager.FindByIdAsync(userId);
+      // var thisItem = _db.Items.FirstOrDefault(items => items.ItemId == id); // remove this!
+      var thisItem = _db.Items.Where(entry => entry.User.Id == currentUser.Id).FirstOrDefault(items => items.ItemId == id);
+      if (thisItem == null)
+      {
+        return RedirectToAction("Details", new {id = id});
+      }
       ViewBag.CategoryId = new SelectList(_db.Categories, "CategoryId", "Name"); // we'll keep this!
       return View(thisItem);
     }
@@ -101,27 +101,27 @@ namespace ToDoList.Controllers
       return RedirectToAction("Index");
     }
 
-    public ActionResult AddCategory(int id)
-    {
-      var thisItem = _db.Items.FirstOrDefault(items => items.ItemId == id);
-      ViewBag.CategoryId = new SelectList(_db.Categories, "CategoryId", "Name");
-      return View(thisItem);
-    }
-
-    // [Authorize]
-    // public async Task<ActionResult> AddCategory(int id)
+    // public ActionResult AddCategory(int id)
     // {
-    //   var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-    //   var currentUser = await _userManager.FindByIdAsync(userId);
-
-    //   Item thisItem = _db.Items.Where(entry => entry.User.Id == currentUser.Id).FirstOrDefault(items => items.ItemId == id);
-    //   if (thisItem == null)
-    //   {
-    //     return RedirectToAction("Details", new {id = id});
-    //   }
+    //   var thisItem = _db.Items.FirstOrDefault(items => items.ItemId == id);
     //   ViewBag.CategoryId = new SelectList(_db.Categories, "CategoryId", "Name");
     //   return View(thisItem);
     // }
+
+    [Authorize]
+    public async Task<ActionResult> AddCategory(int id)
+    {
+      var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      var currentUser = await _userManager.FindByIdAsync(userId);
+
+      Item thisItem = _db.Items.Where(entry => entry.User.Id == currentUser.Id).FirstOrDefault(items => items.ItemId == id);
+      if (thisItem == null)
+      {
+        return RedirectToAction("Details", new {id = id});
+      }
+      ViewBag.CategoryId = new SelectList(_db.Categories, "CategoryId", "Name");
+      return View(thisItem);
+    }
 
     [HttpPost]
     public ActionResult AddCategory(Item item, int CategoryId)
@@ -135,25 +135,25 @@ namespace ToDoList.Controllers
     }
 
 
-    public ActionResult Delete(int id)
-    {
-      var thisItem = _db.Items.FirstOrDefault(items => items.ItemId == id);
-      return View(thisItem);
-    }
-
-    // [Authorize]
-    // public async Task<ActionResult> Delete(int id)
+    // public ActionResult Delete(int id)
     // {
-    //   var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-    //   var currentUser = await _userManager.FindByIdAsync(userId);
-
-    //   Item thisItem = _db.Items.Where(entry => entry.User.Id == currentUser.Id).FirstOrDefault(items => items.ItemId == id);
-    //   if (thisItem == null)
-    //   {
-    //     return RedirectToAction("Details", new {id = id});
-    //   }
+    //   var thisItem = _db.Items.FirstOrDefault(items => items.ItemId == id);
     //   return View(thisItem);
     // }
+
+    [Authorize]
+    public async Task<ActionResult> Delete(int id)
+    {
+      var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      var currentUser = await _userManager.FindByIdAsync(userId);
+
+      Item thisItem = _db.Items.Where(entry => entry.User.Id == currentUser.Id).FirstOrDefault(items => items.ItemId == id);
+      if (thisItem == null)
+      {
+        return RedirectToAction("Details", new {id = id});
+      }
+      return View(thisItem);
+    }
 
     [HttpPost, ActionName("Delete")]
     public ActionResult DeleteConfirmed(int id)

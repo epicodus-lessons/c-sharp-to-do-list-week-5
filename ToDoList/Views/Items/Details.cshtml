@@ -20,19 +20,22 @@ else
   @foreach(var join in Model.Categories)
   {
     <li>@join.Category.Name</li>
-    @using (Html.BeginForm("DeleteCategory", "Items"))
-    {
-      @Html.Hidden("joinId", @join.CategoryItemId)
-      <input type="submit" value="Delete"/>
+    @if (User.Identity.IsAuthenticated && ViewBag.IsCurrentUser)
+    {   
+      @using (Html.BeginForm("DeleteCategory", "Items"))
+      {
+        @Html.Hidden("joinId", @join.CategoryItemId)
+        <input type="submit" value="Delete"/>
+      }
     }
   }
   </ul>
 }
 
 <p>@Html.ActionLink("Back to list", "Index")</p>
-@* @if (User.Identity.IsAuthenticated && ViewBag.IsCurrentUser) *@
-@* { *@
+@if (User.Identity.IsAuthenticated && ViewBag.IsCurrentUser)
+{
   <p>@Html.ActionLink("Edit Item", "Edit", new { id = Model.ItemId })</p>
   <p>@Html.ActionLink("Add a Category", "AddCategory", new { id = Model.ItemId })</p>
   <p>@Html.ActionLink("Delete Item", "Delete", new { id = Model.ItemId })</p>
-@* } *@
+}
