@@ -22,6 +22,7 @@ else
   <h3>No items have been added yet!</h3>
 }
 
+@*Wrapped the 'Add New Item' ActionLink in an if statement to only show the link if the user is authenticated*@
 @if (User.Identity.IsAuthenticated)
 {
   <p>@Html.ActionLink("Add new item", "Create")</p>
