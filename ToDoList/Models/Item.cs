@@ -2,6 +2,15 @@ using System.Collections.Generic;
 
 namespace ToDoList.Models
 {
+//////////////////////////////////////////////////////
+//////// Authorizing Create, Update and Delete Routes of ItemsController.cs
+//////////////////////////////////////////////////////
+//////// 1. Item.cs needs ApplicationUser property
+//////// 2. ItemsController.cs has various updates
+//////// 3. Views/Items/Details.cshtml has updates
+//////// 4. Views/Items/Index.cshtml has updates
+//////////////////////////////////////////////////////
+
     public class Item
     {
         public Item()
