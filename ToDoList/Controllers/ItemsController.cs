@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Security.Claims;
 
 //////////////////////////////////////////////////////
-//////// Authorizing Create, Update and Delete Routes 
+//////// Authorizing Create, Update and Delete of ItemsController.cs 
 //////////////////////////////////////////////////////
 //////// 1. Item.cs needs ApplicationUser property
 //////// 2. ItemsController.cs has various updates
