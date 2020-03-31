@@ -20,6 +20,7 @@ else
   @foreach(var join in Model.Categories)
   {
     <li>@join.Category.Name</li>
+    @*Wrapped the 'Delete Category' ActionLink in an if statement to only show the link if the user is authenticated and the 'owner' of the item*@
     @if (User.Identity.IsAuthenticated && ViewBag.IsCurrentUser)
     {   
       @using (Html.BeginForm("DeleteCategory", "Items"))
@@ -33,6 +34,7 @@ else
 }
 
 <p>@Html.ActionLink("Back to list", "Index")</p>
+@*Wrapped the Create, Update and Delete ActionLinks in an if statement to only show the link if the user is authenticated and the 'owner' of the item*@
 @if (User.Identity.IsAuthenticated && ViewBag.IsCurrentUser)
 {
   <p>@Html.ActionLink("Edit Item", "Edit", new { id = Model.ItemId })</p>
