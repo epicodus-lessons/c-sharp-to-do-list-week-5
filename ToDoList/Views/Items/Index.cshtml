@@ -6,7 +6,7 @@
 @using System.Security.Claims
 @model IEnumerable<ToDoList.Models.Item>
 
-<h1>Items for @User.Identity.Name</h1>
+<h1>Welcome @User.Identity.Name</h1>
 
 @if (Model.Any())
 {
