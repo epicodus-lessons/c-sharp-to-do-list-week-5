@@ -11,9 +11,17 @@ using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using System.Security.Claims;
 
+//////////////////////////////////////////////////////
+//////// Authorizing Create, Update and Delete Routes 
+//////////////////////////////////////////////////////
+//////// 1. Item.cs needs ApplicationUser property
+//////// 2. ItemsController.cs has various updates
+//////// 3. Views/Items/Details.cshtml has updates
+//////// 4. Views/Items/Index.cshtml has updates
+//////////////////////////////////////////////////////
+
 namespace ToDoList.Controllers
 {
-  // [Authorize] //Remmove this line!
   public class ItemsController : Controller
   {
     private readonly ToDoListContext _db;
@@ -25,18 +33,14 @@ namespace ToDoList.Controllers
       _db = db;
     }
 
-    //we do not want to find the user and their items!
-    // public async Task<ActionResult> Index()
+    //Index Route updated to find all DB items
     public ActionResult Index()
     {
-      // var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-      // var currentUser = await _userManager.FindByIdAsync(userId);
-      // var userItems = _db.Items.Where(entry => entry.User.Id == currentUser.Id);
       List<Item> userItems = _db.Items.ToList();
       return View(userItems);
     }
 
-    // Add Authorize to the Create() Route
+    //Create Route updated to Add Authorization
     [Authorize] 
     public ActionResult Create()
     {
@@ -60,7 +64,7 @@ namespace ToDoList.Controllers
       return RedirectToAction("Index");
     }
 
-    // In Details() we need to find the user associated with the item so that in the view, we can show the edit, delete or add category links if the item "belongs" to that user.
+    // In the Details route we need to find the user associated with the item so that in the view, we can show the edit, delete or add category links if the item "belongs" to that user.
     public ActionResult Details(int id)
     {
       var thisItem = _db.Items
@@ -72,20 +76,18 @@ namespace ToDoList.Controllers
       return View(thisItem);
     }
 
-    // Here we're doing a lot: changing Edit() into an asyn action, finding the user and the item that matches that user id, then doing a safeguard check to see if it is null.
+    // Edit Route is updated to find the user and the item that matches the user id, then is routed based on that result. 
     [Authorize]
-    // public ActionResult Edit(int id)
     public async Task<ActionResult> Edit(int id)
     {
        var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
-      // var thisItem = _db.Items.FirstOrDefault(items => items.ItemId == id); // remove this!
       var thisItem = _db.Items.Where(entry => entry.User.Id == currentUser.Id).FirstOrDefault(items => items.ItemId == id);
       if (thisItem == null)
       {
         return RedirectToAction("Details", new {id = id});
       }
-      ViewBag.CategoryId = new SelectList(_db.Categories, "CategoryId", "Name"); // we'll keep this!
+      ViewBag.CategoryId = new SelectList(_db.Categories, "CategoryId", "Name"); 
       return View(thisItem);
     }
 
@@ -102,19 +104,12 @@ namespace ToDoList.Controllers
       return RedirectToAction("Index");
     }
 
-    // public ActionResult AddCategory(int id)
-    // {
-    //   var thisItem = _db.Items.FirstOrDefault(items => items.ItemId == id);
-    //   ViewBag.CategoryId = new SelectList(_db.Categories, "CategoryId", "Name");
-    //   return View(thisItem);
-    // }
-
+    // AddCategory is updated to find the user and the item that matches the user id, then is routed based on that result. 
     [Authorize]
     public async Task<ActionResult> AddCategory(int id)
     {
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
-
       Item thisItem = _db.Items.Where(entry => entry.User.Id == currentUser.Id).FirstOrDefault(items => items.ItemId == id);
       if (thisItem == null)
       {
@@ -135,13 +130,7 @@ namespace ToDoList.Controllers
       return RedirectToAction("Index");
     }
 
-
-    // public ActionResult Delete(int id)
-    // {
-    //   var thisItem = _db.Items.FirstOrDefault(items => items.ItemId == id);
-    //   return View(thisItem);
-    // }
-
+    // Delete route is updated to find the user and the item that matches the user id, then is routed based on that result. 
     [Authorize]
     public async Task<ActionResult> Delete(int id)
     {
