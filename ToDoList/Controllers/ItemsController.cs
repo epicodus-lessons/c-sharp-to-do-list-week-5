@@ -64,16 +64,15 @@ namespace ToDoList.Controllers
       return RedirectToAction("Index");
     }
 
-    // In the Details route we need to find the user associated with the item so that in the view, we can show the edit, delete or add category links if the item "belongs" to that user.
-    public async Task<ActionResult> Details(int id)
+    // In the Details route we need to find the user associated with the item so that in the view, we can show the edit, delete or add category links if the item "belongs" to that user. Line 75 involves checking if the userId has returned as null, and if it has then IsCurrentUser is set to false, if it has not, then the program evaluates whether userId is equal to thisItem.User.Id.
+    public ActionResult Details(int id)
     {
       var thisItem = _db.Items
           .Include(item => item.Categories)
           .ThenInclude(join => join.Category)
           .FirstOrDefault(item => item.ItemId == id);
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-      var currentUser = await _userManager.FindByIdAsync(userId);
-      ViewBag.IsCurrentUser = currentUser.Id == thisItem.User.Id;
+      ViewBag.IsCurrentUser = userId != null ? userId == thisItem.User.Id : false;
       return View(thisItem);
     }
 
