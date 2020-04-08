@@ -70,6 +70,7 @@ namespace ToDoList.Controllers
       var thisItem = _db.Items
           .Include(item => item.Categories)
           .ThenInclude(join => join.Category)
+          .Include(item => item.User)
           .FirstOrDefault(item => item.ItemId == id);
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       ViewBag.IsCurrentUser = userId != null ? userId == thisItem.User.Id : false;
