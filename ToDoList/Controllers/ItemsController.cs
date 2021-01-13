@@ -64,7 +64,24 @@ namespace ToDoList.Controllers
       return RedirectToAction("Index");
     }
 
-    // In the Details route we need to find the user associated with the item so that in the view, we can show the edit, delete or add category links if the item "belongs" to that user. Line 75 involves checking if the userId has returned as null, and if it has then IsCurrentUser is set to false, if it has not, then the program evaluates whether userId is equal to thisItem.User.Id.
+    // In the Details route we need to find the user associated with the item so that in the view, we can show the edit, delete or add category links if the item "belongs" to that user. Line 93 involves checking if the userId is null: if it is null then IsCurrentUser is set to false, if is not null, then the program evaluates whether userId is equal to thisItem.User.Id and returns true if so, false if not so.
+    // Line 93 can be refactored into an if statement like so:
+    // if (userId != null) 
+    // {
+    //   if (userId == thisItem.User.Id) 
+    //   {
+    //     ViewBag.IsCurrentUser = true;
+    //   }
+    //   else
+    //   {
+    //     ViewBag.IsCurrentUser = false;
+    //   }
+    // }
+    // else 
+    // {
+    //   ViewBag.IsCurrentUser = false;
+    // }
+    // Look at the Details view and how IsCurrentUser is used to help comprehend what is happening in the conditional using the ternary operator 
     public ActionResult Details(int id)
     {
       var thisItem = _db.Items
